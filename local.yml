@@ -75,4 +75,7 @@
         name: "Ansible-pull cron job"
         user: ansible
         minute: "*/10"
-        job: "ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git >> /var/applogs/ansible_dotfiles.log 2>&1"
+        job: "sudo bash -c 'ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git >> /var/applogs/ansible_dotfiles.log 2>&1'"
+
+    - name: Add fonts if needed
+      import_tasks: tasks/fonts.yml
