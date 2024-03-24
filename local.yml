@@ -4,6 +4,18 @@
   become: true
 
   tasks:
-    - name: Install htop
+    - name: Install packages
       package:
-        name: htop
+        name: 
+          - htop
+          - tmux
+          - neovim
+          - i3
+          - polybar
+
+    - name: Copy config files
+      copy:
+        src: files/bashrc
+        dest: ~/.bashrc
+        owner: $USER
+        group: $USER
