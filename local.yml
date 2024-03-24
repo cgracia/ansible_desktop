@@ -2,8 +2,9 @@
 - hosts: localhost
   connection: local
   vars:
-    user_home: "{{ ansible_env.HOME }}"
-    user_name: "{{ ansible_user_id }}"
+    user_home: "/home/carlos"
+    user_name: "carlos"
+  become: yes
 
   tasks:
     - name: Install packages
@@ -15,13 +16,6 @@
           - i3
           - polybar
           - cmatrix
-      become: yes
-
-    - name: Debug user home and name
-      debug:
-        msg:
-          - "User home directory: {{ user_home }}"
-          - "User name: {{ user_name }}"
 
     - name: Copy bashrc
       copy:
@@ -29,29 +23,32 @@
         dest: "{{ user_home }}/.bashrc"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
-      become: no
 
     - name: Copy i3 config
       copy:
         src: files/i3
-        dest: "{{ user_home }}/.config/i3/config"
+        dest: "{{ user_home }}/.config/"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
-      become: no
 
     - name: Copy polybar config
       copy:
         src: files/polybar
-        dest: "{{ user_home }}/.config/polybar/config"
+        dest: "{{ user_home }}/.config/"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
-      become: no
+
+    - name: Copy nvim config
+      copy:
+        src: files/nvim
+        dest: "{{ user_home }}/.config/"
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
 
     - name: Add Ansible user
       user:
         name: ansible
         system: yes
-      become: yes
 
     - name: Add Ansible user to sudoers
       copy:
@@ -60,12 +57,18 @@
         owner: root
         group: root
         mode: 0440
-      become: yes
 
     - name: Add Ansible-pull cron job
       cron:
         name: "Ansible-pull cron job"
         user: ansible
         minute: "*/10"
-        job: "ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git"
-      become: yes
+        job: "ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git >> /var/log/ansible_dotfiles.log 2>&1"
+
+    - name: Configure logrotate for ansible_dotfiles.log
+      copy:
+        src: files/logrotate_ansible_dotfiles
+        dest: /etc/logrotate.d/ansible_dotfiles
+        owner: root
+        group: root
+        mode: 0644

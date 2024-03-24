@@ -1,0 +1,7 @@
+/var/log/ansible_dotfiles.log {
+    rotate 4
+    weekly
+    notifempty
+    compress
+    missingok
+}
