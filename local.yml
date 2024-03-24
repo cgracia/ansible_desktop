@@ -23,10 +23,26 @@
           - "User home directory: {{ user_home }}"
           - "User name: {{ user_name }}"
 
-    - name: Copy config files
+    - name: Copy bashrc
       copy:
         src: files/bashrc
         dest: "{{ user_home }}/.bashrc"
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+      become: no
+
+    - name: Copy i3 config
+      copy:
+        src: files/i3
+        dest: "{{ user_home }}/.config/i3/config"
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+      become: no
+
+    - name: Copy polybar config
+      copy:
+        src: files/polybar
+        dest: "{{ user_home }}/.config/polybar/config"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
       become: no
