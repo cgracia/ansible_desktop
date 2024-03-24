@@ -1,7 +1,9 @@
 ---
 - hosts: localhost
   connection: local
-  become: true
+  vars:
+    user_home: "{{ ansible_env.HOME }}"
+    user_name: "{{ ansible_user_id }}"
 
   tasks:
     - name: Install packages
@@ -12,10 +14,42 @@
           - neovim
           - i3
           - polybar
+          - cmatrix
+      become: yes
+
+    - name: Debug user home and name
+      debug:
+        msg:
+          - "User home directory: {{ user_home }}"
+          - "User name: {{ user_name }}"
 
     - name: Copy config files
       copy:
         src: files/bashrc
-        dest: ~/.bashrc
-        owner: $USER
-        group: $USER
+        dest: "{{ user_home }}/.bashrc"
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+      become: no
+
+    - name: Add Ansible user
+      user:
+        name: ansible
+        system: yes
+      become: yes
+
+    - name: Add Ansible user to sudoers
+      copy:
+        src: files/sudoer_ansible
+        dest: /etc/sudoers.d/ansible
+        owner: root
+        group: root
+        mode: 0440
+      become: yes
+
+    - name: Add Ansible-pull cron job
+      cron:
+        name: "Ansible-pull cron job"
+        user: ansible
+        minute: "*/10"
+        job: "ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git"
+      become: yes
