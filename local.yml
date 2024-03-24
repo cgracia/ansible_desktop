@@ -7,6 +7,14 @@
   become: yes
 
   tasks:
+    - name: Add PPAs
+      apt_repository:
+        repo: "{{ item }}"
+        state: present
+      with_items:
+        - "ppa:neovim-ppa/unstable"
+        - "ppa:aslatter/ppa"
+
     - name: Install packages
       package:
         name: 
@@ -16,6 +24,9 @@
           - i3
           - polybar
           - cmatrix
+          - xss-lock
+          - alacritty
+
 
     - name: Copy bashrc
       copy:
@@ -24,23 +35,9 @@
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
 
-    - name: Copy i3 config
+    - name: Copy config files
       copy:
-        src: files/i3
-        dest: "{{ user_home }}/.config/"
-        owner: "{{ user_name }}"
-        group: "{{ user_name }}"
-
-    - name: Copy polybar config
-      copy:
-        src: files/polybar
-        dest: "{{ user_home }}/.config/"
-        owner: "{{ user_name }}"
-        group: "{{ user_name }}"
-
-    - name: Copy nvim config
-      copy:
-        src: files/nvim
+        src: files/config/
         dest: "{{ user_home }}/.config/"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
