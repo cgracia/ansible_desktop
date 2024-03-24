@@ -22,6 +22,8 @@
           - tmux
           - neovim
           - i3
+          - i3lock
+          - i3lock-fancy
           - polybar
           - cmatrix
           - xss-lock
@@ -77,5 +79,11 @@
         minute: "*/10"
         job: "sudo bash -c 'ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git >> /var/applogs/ansible_dotfiles.log 2>&1'"
 
+    - name: Check if Hack Nerd Font is already installed
+      ansible.builtin.stat:
+        path: /usr/share/fonts/Hack/HackNerdFont-Regular.ttf
+      register: hack_font
+
     - name: Add fonts if needed
-      import_tasks: tasks/fonts.yml
+      include_tasks: tasks/fonts.yml
+      when: not hack_font.stat.exists

@@ -1,31 +1,22 @@
 ---
-- name: Check if Hack Nerd Font is already installed
-  ansible.builtin.stat:
-    path: /usr/share/fonts/Hack/HackNerdFont-Regular.ttf
-  register: hack_font
-
 - name: Create fonts directory if it does not exist
   file:
     path: /usr/share/fonts/Hack
     state: directory
     mode: '0755'
-  when: not hack_font.stat.exists
 
 - name: Download Hack Nerd Fonts zip file
   get_url:
     url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Hack.zip
     dest: /tmp/Hack.zip
     mode: '0644'
-  when: not hack_font.stat.exists
 
 - name: Unzip Hack Nerd Fonts to the fonts directory
   ansible.builtin.unarchive:
     src: /tmp/Hack.zip
     dest: /usr/share/fonts/Hack
     remote_src: yes
-  when: not hack_font.stat.exists
 
 - name: Update font cache
   ansible.builtin.command:
     cmd: fc-cache -fv
-  when: not hack_font.stat.exists
