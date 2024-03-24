@@ -27,7 +27,6 @@
           - xss-lock
           - alacritty
 
-
     - name: Copy bashrc
       copy:
         src: files/bashrc
@@ -41,6 +40,22 @@
         dest: "{{ user_home }}/.config/"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
+
+    - name: Create a universally accessible log directory
+      file:
+        path: /var/applogs
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Configure logrotate for applogs.log
+      copy:
+        src: files/logrotate_applogs
+        dest: /etc/logrotate.d/applogs
+        owner: root
+        group: root
+        mode: 0644
 
     - name: Add Ansible user
       user:
@@ -60,12 +75,4 @@
         name: "Ansible-pull cron job"
         user: ansible
         minute: "*/10"
-        job: "ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git >> /var/log/ansible_dotfiles.log 2>&1"
-
-    - name: Configure logrotate for ansible_dotfiles.log
-      copy:
-        src: files/logrotate_ansible_dotfiles
-        dest: /etc/logrotate.d/ansible_dotfiles
-        owner: root
-        group: root
-        mode: 0644
+        job: "ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git >> /var/applogs/ansible_dotfiles.log 2>&1"
