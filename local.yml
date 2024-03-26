@@ -43,6 +43,14 @@
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
 
+    - name: Ensure scripts are executable
+      file:
+        path: "{{ item }}"
+        mode: '0755'
+      with_fileglob:
+        - "{{ user_home }}/.config/i3/scripts/*.sh"
+        - "{{ user_home }}/.config/i3/scripts/*.py"
+
     - name: Create a universally accessible log directory
       ansible.builtin.file:
         path: /var/applogs
