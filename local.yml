@@ -8,7 +8,7 @@
 
   tasks:
     - name: Add PPAs
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: "{{ item }}"
         state: present
       with_items:
@@ -16,7 +16,7 @@
         - "ppa:aslatter/ppa"
 
     - name: Install packages
-      package:
+      ansible.builtin.package:
         name: 
           - htop
           - tmux
@@ -30,21 +30,21 @@
           - alacritty
 
     - name: Copy bashrc
-      copy:
+      ansible.builtin.copy:
         src: files/bashrc
         dest: "{{ user_home }}/.bashrc"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
 
     - name: Copy config files
-      copy:
+      ansible.builtin.copy:
         src: files/config/
         dest: "{{ user_home }}/.config/"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
 
     - name: Create a universally accessible log directory
-      file:
+      ansible.builtin.file:
         path: /var/applogs
         state: directory
         owner: root
@@ -52,28 +52,28 @@
         mode: '0755'
 
     - name: Configure logrotate for applogs.log
-      copy:
+      ansible.builtin.copy:
         src: files/logrotate_applogs
         dest: /etc/logrotate.d/applogs
         owner: root
         group: root
-        mode: 0644
+        mode: '0644'
 
     - name: Add Ansible user
-      user:
+      ansible.builtin.user:
         name: ansible
         system: yes
 
     - name: Add Ansible user to sudoers
-      copy:
+      ansible.builtin.copy:
         src: files/sudoer_ansible
         dest: /etc/sudoers.d/ansible
         owner: root
         group: root
-        mode: 0440
+        mode: '0440'
 
     - name: Add Ansible-pull cron job
-      cron:
+      ansible.builtin.cron:
         name: "Ansible-pull cron job"
         user: ansible
         minute: "*/10"
