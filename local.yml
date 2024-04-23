@@ -1,40 +1,71 @@
 ---
 - hosts: localhost
   connection: local
+  become: yes
   vars:
     user_home: "/home/carlos"
     user_name: "carlos"
-  become: yes
+    ppas:
+      - name: neovim
+        key_url: '"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x9DBB0BE9366964F134855E2255F96FCF8231B6DD"'
+        repo: "neovim-ppa/unstable"
+        filename: neovim
+      - name: aslatter
+        key_url: '"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x52B24DF7D43B5377"'
+        repo: "aslatter/ppa"
+        filename: aslatter
 
   tasks:
+    - name: Import GPG key for Neovim
+      ansible.builtin.shell:
+         cmd: curl -s {{ item.key_url }} | gpg --dearmor -o /etc/apt/trusted.gpg.d/{{ item.filename }}.gpg
+      args:
+        creates: /etc/apt/trusted.gpg.d/{{ item.filename }}.gpg
+      loop: "{{ ppas }}"
+
     - name: Add PPAs
       ansible.builtin.apt_repository:
-        repo: "{{ item }}"
+        repo: "deb [signed-by=/etc/apt/trusted.gpg.d/{{ item.filename }}.gpg] http://ppa.launchpad.net/{{ item.repo }}/ubuntu {{ ansible_distribution_release }} main"
         state: present
-      with_items:
-        - "ppa:neovim-ppa/unstable"
-        - "ppa:aslatter/ppa"
+      loop: "{{ ppas }}"
 
     - name: Install packages
       ansible.builtin.package:
-        name: 
+        name:
+          - alacritty
+          - arandr
+          - cmatrix
           - htop
-          - tmux
-          - neovim
           - i3
           - i3lock
           - i3lock-fancy
+          - keychain
+          - neovim
+          - npm
           - polybar
-          - cmatrix
+          - rofi
+          - tmux
           - xss-lock
-          - alacritty
+          - zoxide
+        state: present
+        update_cache: yes
 
-    - name: Copy bashrc
+    - name: Find files in the local directory
+      ansible.builtin.find:
+        paths: "files/home/"
+        file_type: file
+      delegate_to: localhost
+      register: files_found
+
+    - name: Copy and rename files to the remote system
       ansible.builtin.copy:
-        src: files/bashrc
-        dest: "{{ user_home }}/.bashrc"
+        src: "{{ item.path }}"
+        dest: "{{ user_home }}/.{{ item.path | basename }}"
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
+        mode: '0644'
+      loop: "{{ files_found.files }}"
+      when: files_found.matched > 0
 
     - name: Copy config files
       ansible.builtin.copy:
@@ -44,12 +75,15 @@
         group: "{{ user_name }}"
 
     - name: Ensure scripts are executable
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         mode: '0755'
       with_fileglob:
         - "{{ user_home }}/.config/i3/scripts/*.sh"
         - "{{ user_home }}/.config/i3/scripts/*.py"
+        - "{{ user_home }}/.config/polybar/launch.sh"
+        - "{{ user_home }}/.config/polybar/scripts/*.sh"
+        - "{{ user_home }}/.config/polybar/scripts/*.py"
 
     - name: Create a universally accessible log directory
       ansible.builtin.file:
@@ -86,6 +120,17 @@
         user: ansible
         minute: "*/10"
         job: "sudo bash -c 'ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git >> /var/applogs/ansible_dotfiles.log 2>&1'"
+
+    - name: Install font packages for Polybar
+      ansible.builtin.apt:
+        name:
+          - fonts-noto
+          - fonts-unifont
+          - fonts-font-awesome
+          - fonts-material-design-icons-iconfont
+          - xfonts-terminus
+        state: present
+        update_cache: yes
 
     - name: Check if Hack Nerd Font is already installed
       ansible.builtin.stat:
