@@ -11,3 +11,10 @@ sudo ansible-pull -U https://github.com/cgracia/ansible_desktop.git
 ```
 3. ????
 4. Profit!
+
+## After installing
+
+1. Setup copilot in Nvim
+```
+:Copilot setup
+```

@@ -135,8 +135,8 @@ complete -F _complete_alias "${!BASH_ALIASES[@]}"
 eval $(keychain --eval --agents ssh ~/.ssh/id_ed25519)
 
 export EDITOR=nvim
-export WSS_PREFIX=er
-source /home/carlos/workspace_scripts_light/setup.bash
+export WSS_PREFIX="er"
+source ~/workspace_scripts_light/setup.bash
 export USER_ID=1000
 export GROUP_ID=1000
 export ER_DOCKERDEV_PROJECT_PATH=/home/carlos/er_dockerdev
