@@ -69,10 +69,10 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
+bindsym $mod+Shift+H move left
+bindsym $mod+Shift+J move down
+bindsym $mod+Shift+K move up
+bindsym $mod+Shift+L move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -131,12 +131,12 @@ bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
 # reload the configuration file
-bindsym $mod+Shift+c reload
+bindsym $mod+Shift+C reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+bindsym $mod+Shift+R restart
 # exit i3 (logs you out of your X session)
 #bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-bindsym $mod+Shift+e exec sh -c '[ $(echo "NO\nYES" | dmenu -sb "#ff6600" -i -p "Really exit i3 X session?") = "YES" ] && i3-msg exit'
+bindsym $mod+Shift+E exec sh -c '[ $(echo "NO\nYES" | dmenu -sb "#ff6600" -i -p "Really exit i3 X session?") = "YES" ] && i3-msg exit'
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -176,7 +176,7 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 # Startup programs
 exec firefox
-exec google-chrome
+exec google-chrome-stable
 
 # Assign workspaces
 assign [class="Firefox"] 1
@@ -198,7 +198,7 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl -- set-sink-volume @DEFA
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 
 # Switch headphone card profile
-bindsym $mod+Shift+S exec ~/hacky_scripts/switch_headphone.sh
+#bindsym $mod+Shift+S exec ~/hacky_scripts/switch_headphone.sh
 
 # Screen brightness controls
 bindsym XF86MonBrightnessUp exec xbacklight -inc 20
