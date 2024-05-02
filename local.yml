@@ -34,6 +34,7 @@
         name:
           - alacritty
           - arandr
+          - chromium-browser
           - cmatrix
           - htop
           - i3
@@ -42,7 +43,9 @@
           - keychain
           - neovim
           - npm
+          - pavucontrol
           - polybar
+          - python3.12-venv
           - rofi
           - tmux
           - xss-lock
