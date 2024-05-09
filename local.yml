@@ -5,30 +5,8 @@
   vars:
     user_home: "/home/carlos"
     user_name: "carlos"
-    ppas:
-      - name: neovim
-        key_url: '"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x9DBB0BE9366964F134855E2255F96FCF8231B6DD"'
-        repo: "neovim-ppa/unstable"
-        filename: neovim
-      - name: aslatter
-        key_url: '"https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x52B24DF7D43B5377"'
-        repo: "aslatter/ppa"
-        filename: aslatter
 
   tasks:
-    - name: Import GPG key for Neovim
-      ansible.builtin.shell:
-         cmd: curl -s {{ item.key_url }} | gpg --dearmor -o /etc/apt/trusted.gpg.d/{{ item.filename }}.gpg
-      args:
-        creates: /etc/apt/trusted.gpg.d/{{ item.filename }}.gpg
-      loop: "{{ ppas }}"
-
-    - name: Add PPAs
-      ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/trusted.gpg.d/{{ item.filename }}.gpg] http://ppa.launchpad.net/{{ item.repo }}/ubuntu {{ ansible_distribution_release }} main"
-        state: present
-      loop: "{{ ppas }}"
-
     - name: Install packages
       ansible.builtin.package:
         name:
@@ -143,3 +121,5 @@
     - name: Add fonts if needed
       include_tasks: tasks/fonts.yml
       when: not hack_font.stat.exists
+
+- import_playbook: playbooks/install_obsidian.yml
