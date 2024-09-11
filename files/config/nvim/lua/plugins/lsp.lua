@@ -37,7 +37,7 @@ return {
                         'lua_ls',
                         'marksman',
                         'pyright',
-                        'tsserver',
+                        'ts_ls',
                         'vimls',
                         'yamlls',
                     },
@@ -55,7 +55,7 @@ return {
             lspconfig.lua_ls.setup{}
             lspconfig.marksman.setup{}
             lspconfig.pyright.setup{}
-            lspconfig.tsserver.setup{}
+            lspconfig.ts_ls.setup{}
             lspconfig.vimls.setup{}
             lspconfig.yamlls.setup{}
 
