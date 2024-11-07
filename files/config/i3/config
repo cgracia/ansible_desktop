@@ -209,7 +209,7 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20
 exec_always --no-startup-id "setxkbmap -layout us,de,es -option 'grp:alt_space_toggle'"
 
 # Multi-screen screenshots with scrot
-bindsym --release $mod+Shift+Y exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' # All screens
+bindsym --release $mod+Shift+Y exec scrot -u 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' # All screens
 
 # OSX-like area selection screenshots
 bindsym --release $mod+y exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' # Area selection
@@ -226,7 +226,7 @@ exec ~/.config/i3/scripts/disable_touchpad.sh
 bindsym $mod+Shift+T exec ~/.config/i3/scripts/toggle_touchpad.sh
 
 # Download youtube music
-bindsym $mod+Shift+Y exec "bash ~/.config/i3/scripts/youtube_downloader.sh"
+# bindsym $mod+Shift+Y exec "bash ~/.config/i3/scripts/youtube_downloader.sh"
 # sudo youtube-dl -U Remember to run from time to time!
 
 # Control cmus
