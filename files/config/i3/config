@@ -270,5 +270,8 @@ bindsym $mod+Shift+F exec ~/.config/i3/scripts/firefox_comm.sh
 # DeepL translate from clipboard
 bindsym $mod+b exec ~/.config/i3/scripts/translate.sh
 
+# Toggle codec for bluetooth headphones
+bindsym $mod+Shift+B exec ~/.config/i3/scripts/toggle_bluetooth_audio.sh
+
 # Rescuetime
 exec --no-startup-id rescuetime
