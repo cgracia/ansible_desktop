@@ -1,4 +1,12 @@
 #!/bin/sh -e
+# Stop playing music if cmus is running
+if cmus-remote -Q > /dev/null 2>&1; then
+    cmus-remote --pause
+    echo "Music paused in cmus."
+else
+    echo "cmus is not running. Skipping music pause."
+fi
+
 i3lock-fancy &
 
 # Brief delay to ensure i3lock starts

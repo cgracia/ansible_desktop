@@ -228,8 +228,7 @@ exec ~/.config/i3/scripts/disable_touchpad.sh
 bindsym $mod+Shift+T exec ~/.config/i3/scripts/toggle_touchpad.sh
 
 # Download youtube music
-# bindsym $mod+Shift+Y exec "bash ~/.config/i3/scripts/youtube_downloader.sh"
-# sudo youtube-dl -U Remember to run from time to time!
+bindsym $mod+Shift+Y exec "bash ~/.config/i3/scripts/youtube_downloader.sh"
 
 # Control cmus
 bindsym $mod+c exec "cmus-remote --pause"
@@ -271,9 +270,6 @@ bindsym $mod+Shift+F exec ~/.config/i3/scripts/firefox_comm.sh
 
 # DeepL translate from clipboard
 bindsym $mod+b exec ~/.config/i3/scripts/translate.sh
-
-# Toggle codec for bluetooth headphones
-bindsym $mod+Shift+B exec ~/.config/i3/scripts/toggle_bluetooth_audio.sh
 
 # Rescuetime
 exec --no-startup-id rescuetime
