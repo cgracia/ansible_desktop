@@ -170,8 +170,7 @@ bindsym XF86Display exec --no-startup-id  "python3 ~/.config/i3/scripts/screench
 #exec_always --no-startup-id "~/.config/i3/scripts/screencheck.sh"
 #bindsym XF86Display exec --no-startup-id  "~/.config/i3/scripts/screencheck.sh"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+# Start polybar to display a workspace bar
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 # Startup programs
@@ -196,6 +195,9 @@ bindsym $mod+Escape exec ~/.config/i3/scripts/fuzzy_lock.sh
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ +5%; exec pkill -RTMIN+10 i3blocks
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ -5%; exec pkill -RTMIN+10 i3blocks
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+# Mute microphone
+bindsym $mod+Shift+U exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 # Switch headphone card profile
 #bindsym $mod+Shift+S exec ~/hacky_scripts/switch_headphone.sh
