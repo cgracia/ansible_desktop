@@ -21,7 +21,7 @@ font-3 = FontAwesome:size=10;0
 
 modules-left = powermenu
 modules-center = date
-modules-right = updates keyboard bluetooth-audio volume backlight wireless-network wired-network battery
+modules-right = updates keyboard bluetooth volume backlight wireless-network wired-network battery
 
 wm-restack = i3
 
@@ -443,10 +443,16 @@ exec = number=$(apt list --upgradable 2> /dev/null | wc -l) && echo "$number upd
 
 interval = 3600
 
+[module/bluetooth-ipc]
+type = custom/ipc
+hook-0 = ~/config/polybar/bluetooth_status.sh
+click-left = ~/.config/polybar/scripts/bluetooth_status.sh toggle
+
 [module/bluetooth]
 type = custom/script
-exec = ~/bluetooth_status.sh
+exec = ~/.config/polybar/scripts/bluetooth_status.sh
 interval = 10
+hook-0 = ~/config/polybar/bluetooth_status.sh
 click-left = ~/.config/polybar/scripts/bluetooth_status.sh toggle
 
 ; vim:ft=dosini

@@ -4,8 +4,9 @@ DEVICE="bluez_card.80_C3_BA_50_05_60"
 BATTERY_PATH="/sys/class/power_supply/hci0/devices/80:C3:BA:50:05:60/battery"
 
 # Check if the device is connected
-CONNECTED=$(pactl list cards | grep -A 1 $DEVICE | grep "State" | awk '{print $2}')
-if [[ "$CONNECTED" != "RUNNING" ]]; then
+CONNECTED=$(pactl list cards | grep $DEVICE)
+if [[ -z "$CONNECTED" ]]; then
+    # No output means the device is disconnected
     echo "🔵🔴 Disconnected"
     exit 0
 fi
@@ -35,4 +36,7 @@ if [[ "$1" == "toggle" ]]; then
     else
         pactl set-card-profile $DEVICE a2dp-sink
     fi
+
+    # Update polybar
+    polybar-msg hook bluetooth_audio 1
 fi
