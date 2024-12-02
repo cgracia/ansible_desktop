@@ -1,7 +1,7 @@
 #!/bin/sh -e
 # Stop playing music if cmus is running
 if cmus-remote -Q > /dev/null 2>&1; then
-    cmus-remote --pause
+    cmus-remote --pause-playback
     echo "Music paused in cmus."
 else
     echo "cmus is not running. Skipping music pause."
