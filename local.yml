@@ -14,6 +14,7 @@
           - arandr
           - chromium-browser
           - cmatrix
+          - glances
           - htop
           - i3
           - i3lock
