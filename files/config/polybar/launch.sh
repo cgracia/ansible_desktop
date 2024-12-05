@@ -15,8 +15,8 @@ if [ -f /tmp/monitor_info.sh ]; then
     printf "Monitor info loaded from /tmp/monitor_info.sh\n"
 else
     MONITOR0='eDP-1'
-    MONITOR1='DP-3'
-    MONITOR2='DP-2'
+    MONITOR1='DP-1-1'
+    MONITOR2='DP-1-3'
     printf "Monitor info not found, using defaults\n"
 fi
 

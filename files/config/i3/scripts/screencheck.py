@@ -43,7 +43,7 @@ def get_monitor_by_edid(edid):
         print(f"Error running xrandr: {e}")
         return None
 
-monitors = ["eDP-1", "DP-3", "DP-2"]
+monitors = ["eDP-1", "DP-1-1", "DP-1-3"]
 
 # Example operations on monitors, adapt as necessary
 if monitors[1] and monitors[2]:
