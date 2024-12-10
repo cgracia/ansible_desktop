@@ -28,6 +28,7 @@
           - python3.12-venv
           - rofi
           - tmux
+          - yt-dlp
           - xclip
           - xsel
           - xss-lock
