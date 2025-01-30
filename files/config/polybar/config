@@ -51,6 +51,7 @@ font-4 = MaterialIcons:size=10;-1
 font-5 = Terminus:size=8:antialias=false;0
 
 modules-left = i3
+modules-center = todoist_meeting
 modules-right = updates temperature cpu memory
 
 wm-restack = i3
@@ -459,5 +460,11 @@ type = custom/script
 exec = ~/.config/polybar/scripts/cmus_status.sh
 interval = 1
 click-left = cmus-remote -u
+
+[module/todoist_meeting]
+type = custom/script
+exec = ~/.config/polybar/scripts/todoist_next_meeting.py
+interval = 60
+click-left = ~/.config/polybar/scripts/todoist_next_meeting.py complete
 
 ; vim:ft=dosini
