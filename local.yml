@@ -26,6 +26,7 @@
           - pavucontrol
           - polybar
           - python3.12-venv
+          - ranger
           - rofi
           - tmux
           - yt-dlp
