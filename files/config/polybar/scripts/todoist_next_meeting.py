@@ -12,7 +12,7 @@ def load_env():
     env_path = os.path.expanduser("~/.config/todoist.env")
     env_vars = {}
     if os.path.exists(env_path):
-        with open(env_path, "r") as f:
+        with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
                 key, value = line.strip().split("=", 1)
                 env_vars[key] = value
@@ -46,20 +46,17 @@ def get_next_meeting():
     if not meetings:
         return "No meetings found"
 
-    # Sort by due date
     meetings.sort(key=lambda t: t["due"]["datetime"] or t["due"]["date"])
 
     next_meeting = meetings[0]
     meeting_time = next_meeting["due"]["datetime"] or next_meeting["due"]["date"]
     task_id = next_meeting["id"]
 
-    # Convert to datetime object
     now = datetime.datetime.now(datetime.timezone.utc)
     meeting_dt = datetime.datetime.fromisoformat(meeting_time).replace(
         tzinfo=datetime.timezone.utc
     )
 
-    # Determine urgency
     delta = meeting_dt - now
     if delta.total_seconds() < 0:
         color = "%{F#ff0000}"  # Red (overdue)
@@ -68,8 +65,11 @@ def get_next_meeting():
     else:
         color = "%{F#ffffff}"  # White (normal)
 
-    # Meeting title and join link (if available)
     title = next_meeting["content"]
+
+    # If meeting is not today, show the weekday as well
+    if meeting_dt.date() != now.date():
+        title = f"{meeting_dt.strftime('%A')}: {title}"
 
     return task_id, f"{color}{title} at {meeting_dt.strftime('%H:%M')}%{{F-}}"
 
