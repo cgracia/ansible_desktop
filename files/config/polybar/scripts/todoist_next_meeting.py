@@ -46,7 +46,7 @@ def get_next_meeting():
     if not meetings:
         return "No meetings found"
 
-    meetings.sort(key=lambda t: t["due"]["datetime"] or t["due"]["date"])
+    meetings.sort(key=lambda t: t["due"].get("datetime") or t["due"].get("date"))
 
     next_meeting = meetings[0]
     meeting_time = next_meeting["due"]["datetime"] or next_meeting["due"]["date"]
