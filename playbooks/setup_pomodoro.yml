@@ -1,0 +1,50 @@
+---
+- name: Configure Pomodoro daemon
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create ~/.local/bin if it doesn't exist
+      file:
+        path: "{{ ansible_env.HOME }}/.local/bin"
+        state: directory
+        mode: '0755'
+
+    - name: Copy pomodorod.py to target location
+      copy:
+        src: "{{ playbook_dir }}/../files/scripts/pomodorod.py"
+        dest: "{{ ansible_env.HOME }}/.local/bin/pomodorod.py"
+        mode: '0755'
+
+    - name: Create systemd user directory
+      file:
+        path: "{{ ansible_env.HOME }}/.config/systemd/user"
+        state: directory
+        mode: '0755'
+
+    - name: Deploy pomodoro.service file
+      copy:
+        dest: "{{ ansible_env.HOME }}/.config/systemd/user/pomodoro.service"
+        content: |
+          [Unit]
+          Description=Pomodoro Daemon
+          After=network.target
+
+          [Service]
+          PrivateTmp=false
+          ExecStart=/usr/bin/env python3 {{ ansible_env.HOME }}/.local/bin/pomodorod.py
+          Restart=on-failure
+          WorkingDirectory={{ ansible_env.HOME }}/.local/bin
+          Environment=PYTHONUNBUFFERED=1
+
+          [Install]
+          WantedBy=default.target
+        mode: '0644'
+
+    - name: Reload systemd user daemon
+      command: systemctl --user daemon-reload
+
+    - name: Enable pomodoro service
+      command: systemctl --user enable pomodoro.service
+
+    - name: Start pomodoro service
+      command: systemctl --user start pomodoro.service

@@ -49,6 +49,7 @@ font-2 = FontAwesome:size=8;-2
 font-3 = NotoSans-Regular:size=8;-1
 font-4 = MaterialIcons:size=10;-1
 font-5 = Terminus:size=8:antialias=false;0
+font-6 = "Noto Color Emoji:scale=10"
 
 modules-left = i3
 modules-center = todoist_meeting
