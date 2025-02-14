@@ -1,0 +1,48 @@
+- name: Install and configure Zsh
+  hosts: localhost
+  become: no
+  tasks:
+    - name: Install Zsh
+      apt:
+        name: zsh
+        state: present
+      become: yes
+
+    - name: Install Oh My Zsh
+      git:
+        repo: "https://github.com/ohmyzsh/ohmyzsh.git"
+        dest: "~/.oh-my-zsh"
+
+    - name: Set Zsh as default shell
+      command: chsh -s /bin/zsh {{ ansible_user_id }}
+      changed_when: false
+      become: yes
+
+    - name: Install Powerlevel10k theme
+      git:
+        repo: "https://github.com/romkatv/powerlevel10k.git"
+        dest: "~/.oh-my-zsh/custom/themes/powerlevel10k"
+
+    - name: Configure .zshrc
+      copy:
+        dest: ~/.zshrc
+        content: |
+          ZSH_THEME="powerlevel10k/powerlevel10k"
+          plugins=(git zsh-autosuggestions zsh-syntax-highlighting fzf zsh-history-substring-search)
+          bindkey -v
+        mode: '0644'
+
+    - name: Install Zsh plugins
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { repo: "https://github.com/zsh-users/zsh-autosuggestions", dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions" }
+        - { repo: "https://github.com/zsh-users/zsh-syntax-highlighting", dest: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" }
+        - { repo: "https://github.com/zsh-users/zsh-history-substring-search", dest: "~/.oh-my-zsh/custom/plugins/zsh-history-substring-search" }
+        - { repo: "https://github.com/junegunn/fzf.git", dest: "~/.fzf" }
+
+    - name: Install FZF
+      shell: "~/.fzf/install --all"
+      args:
+        executable: /bin/bash
