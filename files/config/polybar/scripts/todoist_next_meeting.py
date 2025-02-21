@@ -49,7 +49,7 @@ def get_next_meeting():
     meetings.sort(key=lambda t: t["due"].get("datetime") or t["due"].get("date"))
 
     next_meeting = meetings[0]
-    meeting_time = next_meeting["due"]["datetime"] or next_meeting["due"]["date"]
+    meeting_time = next_meeting["due"].get("datetime") or next_meeting["due"].get("date")
     task_id = next_meeting["id"]
 
     now = datetime.datetime.now(datetime.timezone.utc)
