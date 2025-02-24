@@ -1,0 +1,11 @@
+---
+- name: Remove apt-esm hook block on Ubuntu systems
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Remove the apt-esm hook block from the apt configuration
+      ansible.builtin.replace:
+        path: /etc/apt/apt.conf.d/20apt-esm-hook.conf
+        regexp: '(?ms)^binary::apt::AptCli::Hooks::Upgrade\s*\{.*?\};\n?'
+        replace: ''
+      when: ansible_distribution == "Ubuntu"
