@@ -243,7 +243,7 @@ for_window [instance="obsidian"] move scratchpad
 bindsym $mod+u [instance="obsidian"] scratchpad show
 
 # Pomodoro
-bindsym $mod+m exec ~/.config/i3/scripts/pomodoro.sh -s
+bindsym $mod+m exec echo "toggle" | socat - UNIX-CONNECT:/tmp/pomodoro.sock
 
 # xkill
 bindsym --release $mod+Shift+N exec xkill
