@@ -54,7 +54,7 @@ font-6 = "Noto Color Emoji:scale=10"
 
 modules-left = i3
 modules-center = todoist_meeting
-modules-right = updates temperature cpu memory
+modules-right = pomodoro updates temperature cpu memory
 
 wm-restack = i3
 enable-ipc = true
@@ -471,8 +471,9 @@ interval = 60
 click-left = ~/.config/polybar/scripts/todoist_next_meeting.py complete
 
 [module/pomodoro]
-type = custom/ipc
+type = custom/script
 exec = ~/.config/polybar/scripts/pomodoro_status.sh
 hook-0 = ~/.config/polybar/scripts/pomodoro_status.sh
+tail = true
 
 ; vim:ft=dosini
