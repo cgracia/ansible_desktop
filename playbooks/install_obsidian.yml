@@ -11,7 +11,7 @@
 
     - name: Set Obsidian installed version
       set_fact:
-        obsidian_version_installed: "{{ obsidian_installed.stdout | regex_search('Version: (.*)', '\\1') | first }}"
+        obsidian_version: "{{ (obsidian_installed.stdout | regex_findall('Version: (.*)')) | first | default('unknown') }}"
       when: obsidian_installed.rc == 0
 
     - name: Get latest Obsidian release version from GitHub
