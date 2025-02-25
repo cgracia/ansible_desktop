@@ -233,9 +233,9 @@ bindsym $mod+less exec --no-startup-id "bash ~/.config/i3/scripts/move_screen.sh
 bindsym $mod+Shift+less exec --no-startup-id "bash ~/.config/i3/scripts/move_screen.sh workspace"
 
 # Todoist
-exec --no-startup-id chromium-browser --app="https://todoist.com/app?lang=en" &
-for_window [instance="todoist.com__app"] move scratchpad
-bindsym $mod+o [instance="todoist.com__app"] scratchpad show
+exec --no-startup-id ~/Todoist-linux-x64/Todoist &
+for_window [instance="todoist-nativefier-11f283"] move scratchpad
+bindsym $mod+o [instance="todoist-nativefier-11f283"] scratchpad show
 
 # Obsidian
 exec --no-startup-id obsidian &
