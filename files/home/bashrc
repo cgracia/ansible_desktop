@@ -144,3 +144,5 @@ extend_wss ${ER_DOCKERDEV_PROJECT_PATH}/wss_scripts/
 xhost +local:docker &> /dev/null
 
 eval "$(zoxide init bash)"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
