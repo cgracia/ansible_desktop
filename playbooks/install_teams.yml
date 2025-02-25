@@ -1,0 +1,47 @@
+---
+- name: Install Teams for Linux with fixed repository configuration and sandbox permissions
+  hosts: localhost
+  become: true
+
+  vars:
+    teams_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
+
+  tasks:
+    - name: Ensure apt keyrings directory exists
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Teams for Linux GPG key
+      get_url:
+        url: https://repo.teamsforlinux.de/teams-for-linux.asc
+        dest: /etc/apt/keyrings/teams-for-linux.asc
+        mode: '0644'
+
+    - name: Configure Teams for Linux repository file
+      copy:
+        dest: /etc/apt/sources.list.d/teams-for-linux-packages.list
+        content: "deb [signed-by=/etc/apt/keyrings/teams-for-linux.asc arch={{ teams_arch }}] https://repo.teamsforlinux.de/debian/ stable main\n"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Update apt cache
+
+    - name: Install teams-for-linux package
+      apt:
+        name: teams-for-linux
+        state: present
+      notify: Update apt cache
+
+    - name: Fix chrome-sandbox permissions
+      file:
+        path: /opt/teams-for-linux/chrome-sandbox
+        owner: root
+        group: root
+        mode: '4755'
+
+  handlers:
+    - name: Update apt cache
+      apt:
+        update_cache: yes

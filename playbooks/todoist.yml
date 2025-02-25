@@ -1,0 +1,81 @@
+---
+- name: Setup Todoist Electron App and i3 Configuration
+  hosts: localhost
+  become: no
+  vars:
+    todoist_url: "https://todoist.com/app?lang=en"
+    apps_folder: "/home/{{ ansible_user_id }}/Apps"
+    nativefier_app_folder: "{{ apps_folder }}/Todoist-linux-x64"  # Nativefier output folder name may vary
+    # Expected WM_CLASS if using --name "Todoist" (verify with xprop afterwards)
+    wm_class: "todoist-nativefier-11f283"
+    i3_config_path: "/home/{{ ansible_user_id }}/.config/i3"
+    i3_config_file: "{{ i3_config_path }}/config.d/99-todoist.conf"
+
+  tasks:
+    - name: Ensure Node.js and npm are installed (Debian/Ubuntu)
+      become: yes
+      apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+      tags: packages
+
+    - name: Install Nativefier globally via npm
+      become: yes
+      npm:
+        name: nativefier
+        global: yes
+        state: present
+      tags: nativefier
+
+    - name: Create the Apps directory
+      file:
+        path: "{{ apps_folder }}"
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        mode: '0755'
+      tags: directories
+
+    - name: Generate Todoist Electron app using Nativefier
+      command: >
+        nativefier --name "{{ app_name }}" "{{ todoist_url }}" --out "{{ apps_folder }}"
+      args:
+        creates: "{{ apps_folder }}/{{ app_name }}-linux-x64"
+        chdir: "{{ apps_folder }}"
+      become: no
+      tags: nativefier
+
+    - name: Fix chrome-sandbox permissions
+      become: yes
+      file:
+        path: "{{ nativefier_app_folder }}/chrome-sandbox"
+        owner: root
+        group: root
+        mode: '4755'
+      tags: permissions
+
+    - name: Ensure i3 config.d directory exists
+      file:
+        path: "{{ i3_config_path }}/config.d"
+        state: directory
+        mode: '0755'
+      tags: i3
+
+    - name: Create i3 config snippet for Todoist scratchpad
+      copy:
+        dest: "{{ i3_config_file }}"
+        content: |
+          # Todoist scratchpad rules
+          exec --no-startup-id /home/carlos/Apps/Todoist-linux-x64/Todoist &
+          for_window [class="{{ wm_class }}"] move scratchpad
+          bindsym $mod+o [class="{{ wm_class }}"] scratchpad show
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: '0644'
+      tags: i3
+
+    - name: Inform user to reload i3 configuration
+      debug:
+        msg: "Todoist app is setup in {{ nativefier_app_folder }} and i3 config snippet is in {{ i3_config_file }}. Reload i3"
+      tags: info
