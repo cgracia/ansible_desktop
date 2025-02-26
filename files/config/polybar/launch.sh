@@ -24,16 +24,13 @@ printf "MONITOR0: $MONITOR0\n"
 printf "MONITOR1: $MONITOR1\n"
 printf "MONITOR2: $MONITOR2\n"
 
-#Launch Polybar for specific monitors
-if xrandr | grep -q "$MONITOR2 connected"; then
+# Check if monitor2 is set as env var, if so use it
+if [ -n "$MONITOR2" ]; then
     MONITOR=$MONITOR2 polybar top &
     MONITOR=$MONITOR2 polybar bottom &
-fi
-
-if xrandr | grep -q "$MONITOR1 connected"; then
     MONITOR=$MONITOR1 polybar extra2 &
-fi
-
-if xrandr | grep -q "$MONITOR0 connected"; then
     MONITOR=$MONITOR0 polybar extra1 &
+else
+    MONITOR=$MONITOR0 polybar top &
+    MONITOR=$MONITOR0 polybar bottom &
 fi
