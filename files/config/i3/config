@@ -232,11 +232,6 @@ bindsym $mod+Shift+M exec "bash ~/.config/i3/scripts/toggle_mic.sh"
 bindsym $mod+less exec --no-startup-id "bash ~/.config/i3/scripts/move_screen.sh container"
 bindsym $mod+Shift+less exec --no-startup-id "bash ~/.config/i3/scripts/move_screen.sh workspace"
 
-# Todoist
-exec --no-startup-id ~/Todoist-linux-x64/Todoist &
-for_window [instance="todoist-nativefier-11f283"] move scratchpad
-bindsym $mod+o [instance="todoist-nativefier-11f283"] scratchpad show
-
 # Obsidian
 exec --no-startup-id obsidian &
 for_window [instance="obsidian"] move scratchpad
