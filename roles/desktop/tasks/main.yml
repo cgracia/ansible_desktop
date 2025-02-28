@@ -28,6 +28,7 @@
       - zoxide
     state: present
     update_cache: yes
+  become: yes
 
 - name: Find files in the local directory
   ansible.builtin.find:
@@ -74,11 +75,13 @@
       - xfonts-terminus
     state: present
     update_cache: yes
+  become: yes
 
 - name: Check if Hack Nerd Font is already installed
   ansible.builtin.stat:
     path: /usr/share/fonts/Hack/HackNerdFont-Regular.ttf
   register: hack_font
+  become: yes
 
 - name: Add fonts if needed
   include_tasks: tasks/fonts.yml
@@ -87,3 +90,7 @@
 - name: Install obsidian
   import_tasks: tasks/obsidian.yml
   when: obsidian_install is defined and obsidian_install
+
+- name: Include zsh setup tasks when enabled
+  include_tasks: zsh_setup.yml
+  when: use_zsh | bool

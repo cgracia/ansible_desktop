@@ -1,0 +1,45 @@
+---
+- name: Install zsh package
+  apt:
+    name: zsh
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Ensure zsh is listed in /etc/shells
+  lineinfile:
+    path: /etc/shells
+    line: /usr/bin/zsh
+    state: present
+  become: yes
+
+- debug:
+    msg: "Ansible user is {{ ansible_env.USER }}"
+
+- name: Set default shell to zsh for the user
+  user:
+    name: "{{ ansible_env.USER }}"
+    shell: /usr/bin/zsh
+  become: yes
+
+- name: Check if .zshrc exists in home directory
+  stat:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+  register: zshrc_file
+  become: no
+
+- name: Warn if .zshrc is missing
+  debug:
+    msg: ".zshrc file is not present in the home directory."
+  when: not zshrc_file.stat.exists
+
+- name: Check if .p10k.zsh exists in home directory
+  stat:
+    path: "{{ ansible_env.HOME }}/.p10k.zsh"
+  register: p10k_file
+  become: no
+
+- name: Warn if .p10k.zsh is missing
+  debug:
+    msg: ".p10k.zsh file is not present in the home directory."
+  when: not p10k_file.stat.exists

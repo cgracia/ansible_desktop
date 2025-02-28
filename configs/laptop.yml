@@ -1,3 +1,4 @@
 # configs/laptop.yml
 desktop_setup: true
 obsidian_install: true
+use_zsh: true

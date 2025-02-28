@@ -1,7 +1,7 @@
 ---
 - hosts: localhost
   connection: local
-  become: yes
+  become: no
   vars:
     #TODO: Add a way to set the user name and home directory
     user_home: "/home/carlos"
@@ -30,6 +30,7 @@
           - tmux
         state: present
         update_cache: yes
+      become: yes
 
     - name: Create a universally accessible log directory
       ansible.builtin.file:
@@ -38,6 +39,7 @@
         owner: root
         group: root
         mode: '0755'
+      become: yes
 
     - name: Configure logrotate for applogs.log
       ansible.builtin.copy:
@@ -46,11 +48,13 @@
         owner: root
         group: root
         mode: '0644'
+      become: yes
 
     - name: Add Ansible user
       ansible.builtin.user:
         name: ansible
         system: yes
+      become: yes
 
     - name: Add Ansible user to sudoers
       ansible.builtin.copy:
@@ -59,6 +63,7 @@
         owner: root
         group: root
         mode: '0440'
+      become: yes
 
     - name: Add Ansible-pull cron job
       ansible.builtin.cron:
@@ -66,3 +71,4 @@
         user: ansible
         minute: "*/10"
         job: "sudo bash -c 'ansible-pull -o -U https://github.com/cgracia/ansible_desktop.git >> /var/applogs/ansible_dotfiles.log 2>&1'"
+      become: yes
