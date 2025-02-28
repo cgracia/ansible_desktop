@@ -1,0 +1,36 @@
+- name: Check if Obsidian is installed and get the installed version
+  command: dpkg -s obsidian
+  register: obsidian_installed
+  ignore_errors: True
+  changed_when: False
+
+- name: Set Obsidian installed version
+  set_fact:
+    obsidian_version: "{{ (obsidian_installed.stdout | regex_findall('Version: (.*)')) | first | default('unknown') }}"
+  when: obsidian_installed.rc == 0
+
+- name: Get latest Obsidian release version from GitHub
+  uri:
+    url: https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest
+    method: GET
+    return_content: yes
+    headers:
+      Accept: "application/vnd.github.v3+json"
+  register: github_release
+
+- name: Set download URL for .deb package
+  set_fact:
+    obsidian_deb_url: "https://github.com/obsidianmd/obsidian-releases/releases/download/{{ github_release.json.tag_name }}/obsidian_{{ github_release.json.tag_name[1:] }}_amd64.deb"
+  when: obsidian_installed.rc != 0 or (obsidian_version_installed is defined and obsidian_version_installed < github_release.json.tag_name)
+
+- name: Download Obsidian .deb package
+  get_url:
+    url: "{{ obsidian_deb_url }}"
+    dest: "/tmp/obsidian.deb"
+    mode: '0644'
+  when: obsidian_installed.rc != 0 or (obsidian_version_installed is defined and obsidian_version_installed < github_release.json.tag_name)
+
+- name: Install Obsidian
+  apt:
+    deb: "/tmp/obsidian.deb"
+  when: obsidian_installed.rc != 0 or (obsidian_version_installed is defined and obsidian_version_installed < github_release.json.tag_name)

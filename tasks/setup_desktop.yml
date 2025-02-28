@@ -1,0 +1,89 @@
+---
+- name: Install packages
+  ansible.builtin.package:
+    name:
+      - alacritty
+      - arandr
+      - chromium-browser
+      - cmatrix
+      - glances
+      - htop
+      - i3
+      - i3lock
+      - i3lock-fancy
+      - keychain
+      - kitty
+      - neovim
+      - npm
+      - pavucontrol
+      - polybar
+      - python3.12-venv
+      - ranger
+      - rofi
+      - tmux
+      - yt-dlp
+      - xclip
+      - xsel
+      - xss-lock
+      - zoxide
+    state: present
+    update_cache: yes
+
+- name: Find files in the local directory
+  ansible.builtin.find:
+    paths: "files/home/"
+    file_type: file
+  delegate_to: localhost
+  register: files_found
+
+- name: Copy and rename files to the remote system
+  ansible.builtin.copy:
+    src: "{{ item.path }}"
+    dest: "{{ user_home }}/.{{ item.path | basename }}"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: '0644'
+  loop: "{{ files_found.files }}"
+  when: files_found.matched > 0
+
+- name: Copy config files
+  ansible.builtin.copy:
+    src: files/config/
+    dest: "{{ user_home }}/.config/"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: Ensure scripts are executable
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0755'
+  with_fileglob:
+    - "{{ user_home }}/.config/i3/scripts/*.sh"
+    - "{{ user_home }}/.config/i3/scripts/*.py"
+    - "{{ user_home }}/.config/polybar/launch.sh"
+    - "{{ user_home }}/.config/polybar/scripts/*.sh"
+    - "{{ user_home }}/.config/polybar/scripts/*.py"
+
+- name: Install font packages for Polybar
+  ansible.builtin.apt:
+    name:
+      - fonts-noto
+      - fonts-unifont
+      - fonts-font-awesome
+      - fonts-material-design-icons-iconfont
+      - xfonts-terminus
+    state: present
+    update_cache: yes
+
+- name: Check if Hack Nerd Font is already installed
+  ansible.builtin.stat:
+    path: /usr/share/fonts/Hack/HackNerdFont-Regular.ttf
+  register: hack_font
+
+- name: Add fonts if needed
+  include_tasks: tasks/fonts.yml
+  when: not hack_font.stat.exists
+
+- name: Install obsidian
+  import_tasks: tasks/obsidian.yml
+  when: obsidian_install is defined and obsidian_install
