@@ -20,6 +20,7 @@
       - python3.12-venv
       - ranger
       - rofi
+      - s-tui
       - tmux
       - yt-dlp
       - xclip
@@ -92,5 +93,9 @@
   when: obsidian_install is defined and obsidian_install
 
 - name: Include zsh setup tasks when enabled
-  include_tasks: zsh_setup.yml
+  include_tasks: zsh.yml
   when: use_zsh | bool
+
+- name: Include librewolf browser setup tasks when enabled
+  include_tasks: librewolf.yml
+  when: use_librewolf | bool

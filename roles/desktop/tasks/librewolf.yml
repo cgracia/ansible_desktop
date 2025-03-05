@@ -1,0 +1,21 @@
+- name: Install extrepo package
+  ansible.builtin.package:
+    name:
+      - extrepo
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Enable LibreWolf repository using extrepo
+  command: extrepo enable librewolf
+  become: yes
+  args:
+    creates: /etc/apt/sources.list.d/extrepo_librewolf.sources
+
+- name: Install LibreWolf browser
+  ansible.builtin.package:
+    name: 
+      - librewolf
+    state: present
+    update_cache: yes
+  become: yes
