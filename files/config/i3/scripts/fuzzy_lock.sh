@@ -14,12 +14,24 @@ sleep 10
 
 delay=20
 log_file="/tmp/fuzzy_lock.log"
+lock_start=$(date +%s)  # Record the lock start time
+sleep_threshold=3600   # 60 minutes in seconds
 
 echo "$(date): Lock initiated" >> "$log_file"
 
 while true; do
     # Check if i3lock is running
     if pgrep i3lock > /dev/null; then
+        current_time=$(date +%s)
+        elapsed=$(( current_time - lock_start ))
+
+        # If 30 minutes have elapsed, suspend or hibernate the system
+        if [ "$elapsed" -ge "$sleep_threshold" ]; then
+            echo "$(date): 30 minutes elapsed, suspending system." >> "$log_file"
+            systemctl suspend-then-hibernate
+            break
+        fi
+
         echo "$(date): i3lock is running, waiting for $delay seconds." >> "$log_file"
         sleep $delay
 
