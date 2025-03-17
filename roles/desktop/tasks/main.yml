@@ -88,6 +88,21 @@
   include_tasks: tasks/fonts.yml
   when: not hack_font.stat.exists
 
+- name: Configure system sleep settings
+  copy:
+    dest: /etc/systemd/sleep.conf
+    content: |
+      [Sleep]
+      AllowSuspend=yes
+      AllowHibernation=yes
+      AllowSuspendThenHibernate=yes
+      HibernateDelaySec=30min
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart systemd-logind
+  become: yes
+
 - name: Install obsidian
   import_tasks: tasks/obsidian.yml
   when: obsidian_install is defined and obsidian_install
@@ -99,3 +114,7 @@
 - name: Include librewolf browser setup tasks when enabled
   include_tasks: librewolf.yml
   when: use_librewolf | bool
+
+- name: Include sddm display manager tasks when enabled
+  include_tasks: sddm.yml
+  when: use_sddm | bool

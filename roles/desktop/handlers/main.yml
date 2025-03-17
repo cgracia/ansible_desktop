@@ -1,2 +1,13 @@
 ---
 # handlers file for desktop
+- name: Restart AppArmor
+  service:
+    name: apparmor
+    state: restarted
+  become: yes
+
+- name: Restart systemd-logind
+  systemd:
+    name: systemd-logind
+    state: restarted
+  become: yes

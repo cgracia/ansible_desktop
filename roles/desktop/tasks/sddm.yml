@@ -1,0 +1,24 @@
+- name: Install sddm
+  apt:
+    name: sddm
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Preseed sddm as default display manager
+  debconf:
+    name: sddm
+    question: "shared/default-x-display-manager"
+    value: "sddm"
+    vtype: "string"
+  become: yes
+
+- name: Check current default display manager
+  slurp:
+    src: /etc/X11/default-display-manager
+  register: current_dm
+
+- name: Reconfigure default display manager to sddm if necessary
+  command: dpkg-reconfigure -f noninteractive sddm
+  when: (current_dm.content | b64decode | trim) != '/usr/bin/sddm'
+  become: yes
