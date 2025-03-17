@@ -19,3 +19,32 @@
     state: present
     update_cache: yes
   become: yes
+
+- name: Create AppArmor profile for librewolf-local
+  copy:
+    dest: /etc/apparmor.d/librewolf-local
+    content: |
+      # This profile allows everything and only exists to give the
+      # application a name instead of having the label "unconfined"
+      abi <abi/4.0>,
+      include <tunables/global>
+      profile librewolf-local
+      /usr/bin/librewolf
+      flags=(unconfined) {
+          userns,
+          # Site-specific additions and overrides. See local/README for details.
+          include if exists <local/librewolf>
+      }
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart AppArmor
+  become: yes
+
+- name: Ensure AppArmor service is started and enabled
+  service:
+    name: apparmor
+    state: started
+    enabled: yes
+  become: yes
