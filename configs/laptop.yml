@@ -3,4 +3,4 @@ desktop_setup: true
 obsidian_install: true
 use_zsh: true
 use_librewolf: true
-use_sddm: true
+use_sddm: false
