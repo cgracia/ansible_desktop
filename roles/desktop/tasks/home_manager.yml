@@ -1,0 +1,28 @@
+- name: Check if Nix is installed (by checking for nix command)
+  command: which nix-env
+  register: nix_check
+  ignore_errors: yes
+
+- name: Install Nix if not present
+  shell: |
+    curl -L https://nixos.org/nix/install | sh
+  when: nix_check.rc != 0
+
+- name: Source Nix environment (if needed)
+  shell: . $HOME/.nix-profile/etc/profile.d/nix.sh
+  args:
+    executable: /bin/sh
+
+- name: Clone Home Manager configuration repository
+  git:
+    repo: "git@github.com:cgracia/home_manager.git"
+    dest: "{{ ansible_env.HOME }}/home_manager"
+    version: "master"
+    update: yes
+
+- name: Apply Home Manager configuration via flake
+  shell: nix run github:nix-community/home-manager -- switch --flake "{{ ansible_env.HOME }}/home_manager#{{ ansible_env.USER }}"
+  args:
+    executable: /bin/sh
+  environment:
+    HOME: "{{ ansible_env.HOME }}"

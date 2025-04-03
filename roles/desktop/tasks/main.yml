@@ -1,4 +1,7 @@
 ---
+- name: Setup home manager
+  include_tasks: home_manager.yml
+
 - name: Install packages
   ansible.builtin.package:
     name:
@@ -14,7 +17,6 @@
       - keychain
       - kitty
       - neovim
-      - npm
       - pavucontrol
       - polybar
       - python3.12-venv
@@ -106,10 +108,6 @@
 - name: Install obsidian
   import_tasks: tasks/obsidian.yml
   when: obsidian_install is defined and obsidian_install
-
-- name: Include zsh setup tasks when enabled
-  include_tasks: zsh.yml
-  when: use_zsh | bool
 
 - name: Include librewolf browser setup tasks when enabled
   include_tasks: librewolf.yml
