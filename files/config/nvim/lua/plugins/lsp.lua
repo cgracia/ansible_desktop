@@ -14,12 +14,13 @@ return {
 
             mason_tool_installer.setup({
               ensure_installed = {
+                "black", -- python formatter
+                "eslint_d", -- js linter
+                "isort", -- python formatter
+                "nixpkgs-fmt", -- nix formatter
                 "prettier", -- prettier formatter
                 "stylua", -- lua formatter
-                "isort", -- python formatter
-                "black", -- python formatter
                 "pylint", -- python linter
-                "eslint_d", -- js linter
               },
             })
           end,
@@ -36,6 +37,7 @@ return {
                         'jsonls',
                         'lua_ls',
                         'marksman',
+                        'nil_ls',
                         'pyright',
                         'ts_ls',
                         'vimls',
@@ -54,6 +56,7 @@ return {
             lspconfig.jsonls.setup{}
             lspconfig.lua_ls.setup{}
             lspconfig.marksman.setup{}
+            lspconfig.nil_ls.setup{}
             lspconfig.pyright.setup{}
             lspconfig.ts_ls.setup{}
             lspconfig.vimls.setup{}
