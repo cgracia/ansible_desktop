@@ -2,5 +2,5 @@
 desktop_setup: true
 obsidian_install: true
 use_zsh: true
-use_librewolf: true
+use_librewolf: false
 use_sddm: false
