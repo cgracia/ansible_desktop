@@ -1,71 +1,57 @@
 return {
-    {
-        'williamboman/mason.nvim',
-        dependencies = {
-          "WhoIsSethDaniel/mason-tool-installer.nvim",
+  {
+    'williamboman/mason.nvim',
+    config = function()
+      require("mason").setup()
+    end,
+  },
+
+  {
+    'williamboman/mason-lspconfig.nvim',
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          'bashls',
+          'dockerls',
+          'docker_compose_language_service',
+          'jsonls',
+          'lua_ls',
+          'marksman',
+          'nil_ls',
+          'pyright',
+          'ts_ls',     -- ✅ replaces deprecated 'tsserver'
+          'vimls',
+          'yamlls',
         },
-        config = function()
-            local mason = require("mason")
+        automatic_installation = true,  -- auto-install any missing servers
+        automatic_enable = true,        -- auto-setup LSPs (requires Neovim 0.11+)
+      })
+    end,
+  },
 
-            local mason_tool_installer = require("mason-tool-installer")
+  {
+    'neovim/nvim-lspconfig',
+    config = function()
+      local lspconfig = require("lspconfig")
 
-            -- enable mason and configure icons
-            mason.setup()
+      -- Set up installed servers
+      lspconfig.bashls.setup({})
+      lspconfig.dockerls.setup({})
+      lspconfig.docker_compose_language_service.setup({})
+      lspconfig.jsonls.setup({})
+      lspconfig.lua_ls.setup({})
+      lspconfig.marksman.setup({})
+      lspconfig.nil_ls.setup({})
+      lspconfig.pyright.setup({})
+      lspconfig.ts_ls.setup({})  -- ✅ ts_ls instead of tsserver
+      lspconfig.vimls.setup({})
+      lspconfig.yamlls.setup({})
 
-            mason_tool_installer.setup({
-              ensure_installed = {
-                "black", -- python formatter
-                "eslint_d", -- js linter
-                "isort", -- python formatter
-                "nixpkgs-fmt", -- nix formatter
-                "prettier", -- prettier formatter
-                "stylua", -- lua formatter
-                "pylint", -- python linter
-              },
-            })
-          end,
-    },
-    {
-        'williamboman/mason-lspconfig.nvim',
-        config = function()
-            require('mason-lspconfig').setup(
-                {
-                    ensure_installed = {
-                        'bashls',
-                        'dockerls',
-                        'docker_compose_language_service',
-                        'jsonls',
-                        'lua_ls',
-                        'marksman',
-                        'nil_ls',
-                        'pyright',
-                        'ts_ls',
-                        'vimls',
-                        'yamlls',
-                    },
-                })
-        end,
-    },
-    {
-        'neovim/nvim-lspconfig',
-        config = function()
-            local lspconfig = require('lspconfig')
-            lspconfig.bashls.setup{}
-            lspconfig.dockerls.setup{}
-            lspconfig.docker_compose_language_service.setup{}
-            lspconfig.jsonls.setup{}
-            lspconfig.lua_ls.setup{}
-            lspconfig.marksman.setup{}
-            lspconfig.nil_ls.setup{}
-            lspconfig.pyright.setup{}
-            lspconfig.ts_ls.setup{}
-            lspconfig.vimls.setup{}
-            lspconfig.yamlls.setup{}
-
-            vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
-            vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-            vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
-            vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, {})
-        end
-    },
+      -- Keymaps for LSP functionality
+      vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+      vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
+      vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, {})
+    end,
+  },
 }
