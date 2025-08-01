@@ -19,7 +19,7 @@ return {
           'marksman',
           'nil_ls',
           'pyright',
-          'ts_ls',     -- ✅ replaces deprecated 'tsserver'
+          'ts_ls',
           'vimls',
           'yamlls',
         },
@@ -43,7 +43,7 @@ return {
       lspconfig.marksman.setup({})
       lspconfig.nil_ls.setup({})
       lspconfig.pyright.setup({})
-      lspconfig.ts_ls.setup({})  -- ✅ ts_ls instead of tsserver
+      lspconfig.ts_ls.setup({})
       lspconfig.vimls.setup({})
       lspconfig.yamlls.setup({})
 
