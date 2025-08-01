@@ -13,6 +13,29 @@
   args:
     executable: /bin/sh
 
+- name: Check for uncommitted changes in home_manager repo
+  shell: |
+    cd "{{ ansible_env.HOME }}/home_manager" && git status --porcelain
+  register: git_status
+  changed_when: false
+
+- name: Fail if there are uncommitted changes in home_manager repo
+  fail:
+    msg: "Uncommitted changes detected in the home_manager repository. Please commit or stash them before proceeding."
+  when: git_status.stdout != ""
+
+- name: Check for unpushed commits in home_manager repo
+  shell: |
+    cd "{{ ansible_env.HOME }}/home_manager" && git log --oneline @{u}..HEAD
+  register: git_unpushed
+  changed_when: false
+  ignore_errors: yes
+
+- name: Fail if there are unpushed commits in home_manager repo
+  fail:
+    msg: "Unpushed commits detected in the home_manager repository. Please push or reconcile them before proceeding."
+  when: git_unpushed.stdout != ""
+
 - name: Clone Home Manager configuration repository
   git:
     repo: "git@github.com:cgracia/home_manager.git"
